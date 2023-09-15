@@ -4,7 +4,7 @@ t_chegada = []
 pico = []
 qtd_process = 0
 
-#----------------Abrindo o Arquivo---------------------------
+#------------------------------Abrindo o Arquivo-------------------------------
 arquivo = open("entradaTeste.txt")
 for linha in arquivo:
     valores = linha.split()
@@ -16,18 +16,18 @@ arquivo.close()
 qtd_process = len(t_chegada)
 
 
-#---------------FCFS (First-Come, First-Served)----------------
+#---------------------------FCFS (First-Come, First-Served)-----------------------
 processo = 0
 t_decorrido = 0
 
 t_espera_medio = 0
 t_espera = []
 
-t__retorno_medio = 0
-t__retorno = []
+t_retorno_medio = 0
+t_retorno = []
 
-t__resposta_medio = 0
-t__resposta = []
+t_resposta_medio = 0
+t_resposta = []
 
 t_restante_processo = []
 
@@ -41,27 +41,27 @@ while True:
         continue
     
     t_espera.insert(processo, t_decorrido - t_chegada[processo])
-    t__resposta.insert(processo, t_decorrido - t_chegada[processo])
+    t_resposta.insert(processo, t_decorrido - t_chegada[processo])
 
     while t_restante_processo[processo] > 0:
         t_restante_processo[processo] -= 1
         t_decorrido += 1
     else:
-        t__retorno.insert(processo, t_decorrido - t_chegada[processo])
+        t_retorno.insert(processo, t_decorrido - t_chegada[processo])
         processo += 1
     
 
     if processo == qtd_process :
         for soma in t_espera:
             t_espera_medio += soma
-        for soma in t__retorno:
-            t__retorno_medio += soma
-        for soma in t__resposta:
-            t__resposta_medio += soma
+        for soma in t_retorno:
+            t_retorno_medio += soma
+        for soma in t_resposta:
+            t_resposta_medio += soma
 
         t_espera_medio /= qtd_process
-        t__retorno_medio /= qtd_process
-        t__resposta_medio /= qtd_process
+        t_retorno_medio /= qtd_process
+        t_resposta_medio /= qtd_process
         break
 
 #print(t_decorrido)
@@ -71,17 +71,17 @@ while True:
 #rint(t__retorno_medio)   
 #print(t__resposta)
 #print(t__resposta_medio)  
-#---------------SJF (Shortest Job First)----------------
+#-------------------------SJF (Shortest Job First)---------------------------
 t_restante_processo.clear()
 
 t_espera_medio = 0
 t_espera.clear()
 
-t__retorno_medio = 0 
-t__retorno.clear()
+t_retorno_medio = 0 
+t_retorno.clear()
 
-t__resposta_medio = 0
-t__resposta.clear()
+t_resposta_medio = 0
+t_resposta.clear()
 
 processo = 0
 t_decorrido = 0
@@ -89,31 +89,73 @@ t_decorrido = 0
 for item in pico:
     t_restante_processo.append(item)
     
-fila_prontos = []
-fila_prontos_pico =[]
+index_processo = []
+fila_prontos =[]
 
 processo_pronto = 0
-cont = 4
-while cont > 0:
+
+cont = 0  #Contador de quantos processos ja estão na fila de prontos
+
+while True:
     
     
-    while t_chegada[processo_pronto] == t_decorrido:
-        fila_prontos.append(t_chegada[processo_pronto])
-        fila_prontos_pico.append(pico[processo_pronto])
+    while cont < qtd_process and t_chegada[processo_pronto] <= t_decorrido:
+        fila_prontos.append(pico[processo_pronto])
+        index_processo.append(processo_pronto)
         processo_pronto += 1
-    
-    cont -= 1
-    proximo_processo = min(fila_prontos_pico)
-    proximo_procsso = fila_prontos_pico.index(proximo_processo)
-    
-    while t_restante_processo[proximo_processo] > 0:
-        t_restante_processo[proximo_processo] -= 1
+        cont += 1
+        
+
+    if len(fila_prontos) == 0:
         t_decorrido += 1
+        continue   
+
+    #print(t_restante_processo)
+    #print(fila_prontos)
+    #print(index_processo)
+
+    proximo_process = min(fila_prontos)
+    processo = fila_prontos.index(proximo_process)
+    fila_prontos.remove(proximo_process)
+    processo = index_processo[processo]
+
+    t_espera.insert(processo, t_decorrido - t_chegada[processo])
+    t_resposta.insert(processo, t_decorrido - t_chegada[processo])
     
-else:
-    print(fila_prontos)
+    while t_restante_processo[processo] > 0:
+        t_restante_processo[processo] -= 1
+        t_decorrido += 1
+        #print(t_restante_processo)
+    else:
+        t_retorno.insert(processo, t_decorrido - t_chegada[processo])
+        index_processo.remove(processo)
     
+    if cont >= qtd_process and len(fila_prontos) == 0:
+        for soma in t_espera:
+            t_espera_medio += soma
+        for soma in t_retorno:
+            t_retorno_medio += soma
+        for soma in t_resposta:
+            t_resposta_medio += soma
+
+        t_espera_medio /= qtd_process
+        t_retorno_medio /= qtd_process
+        t_resposta_medio /= qtd_process
+        break
+
     
+    #print(cont)
+    #print(processo_pronto)
+    
+#print(t_retorno)
+#print(t_resposta)
+#print(t_espera)    
+#print(t_retorno_medio)
+#print(t_resposta_medio)
+#print(t_espera_medio)
+
+
+ #-------------------------RR2 (Shortest Job First)---------------------------  
     
     
         
